@@ -30,11 +30,17 @@ float DynamicCompressor::getMakeUpGain()
     return this->makeUpGain;
 }
 
-void DynamicCompressor::process(double *L, double *R, int numSamples)
+void DynamicCompressor::process(double **input, int numChannels, int numSamples)
 {
     for(int i = 0; i < numSamples; i++)
     {
-        float x_g = (float)(abs(L[i]) + abs(R[i])) / 2;
+
+        float x_g = 0;
+        for(int j = 0; j < numChannels; j++)
+        {
+            x_g += (float)abs(input[j][i]);
+        }
+        x_g /= 2;
         if(x_g < 0.0000001)
         {
             x_g = -120;
@@ -67,7 +73,9 @@ void DynamicCompressor::process(double *L, double *R, int numSamples)
 
         yl_prev = y_l;
         float c = (float)pow(10, (makeUpGain - y_l) / 20);
-        L[i] *= c;
-        R[i] *= c;
+        for(int j = 0; j < numChannels; j++)
+        {
+            input[j][i] *= c;
+        }
     }
 }

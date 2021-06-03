@@ -15,7 +15,7 @@ public:
 
     void setMakeGain(float makeUpGain);
     float getMakeUpGain();
-    void process(double *L, double *R, int numSamples);
+    void process(double **input, int numChannels, int numSamples);
 
 private:
     
